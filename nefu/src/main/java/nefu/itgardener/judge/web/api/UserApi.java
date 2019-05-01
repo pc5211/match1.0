@@ -2,10 +2,10 @@ package nefu.itgardener.judge.web.api;
 
 import nefu.itgardener.judge.common.LibException;
 import nefu.itgardener.judge.common.RestData;
-import nefu.itgardener.judge.core.model.User;
-import nefu.itgardener.judge.core.model.Work;
-import nefu.itgardener.judge.core.model.WorkVo;
+import nefu.itgardener.judge.core.model.*;
 import nefu.itgardener.judge.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +23,10 @@ import java.util.Map;
  * @since : Java 8
  */
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
-@RequestMapping("match")
+@RequestMapping("api")
 @RestController
 public class UserApi {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserService userService;
 
     @Autowired
@@ -34,7 +35,7 @@ public class UserApi {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public RestData postFile(@RequestBody MultipartFile file, String link, String workName, String userId) {
+    public RestData postFile(@RequestParam("file") MultipartFile file, String link, String workName, String userId) {
         if (null == link || workName == null) {
             return new RestData(1, "不允许为空");
         }
@@ -49,10 +50,9 @@ public class UserApi {
         }
         try {
 
-
             //获得文件的字节流
             byte[] bytes = file.getBytes();
-            String workUrl = "D:/testfile/" + file.getOriginalFilename();
+            String workUrl = "" + file.getOriginalFilename();
             work.setWorkUrl(workUrl);
             int i = userService.postUpload(work);
             user.setWorkId(i);
@@ -88,12 +88,76 @@ public class UserApi {
 
     @RequestMapping(value = "/workList", method = RequestMethod.GET)
     public RestData getWorkList(WorkVo workVo) {
-
+        logger.info("getWorkList" + workVo.toString());
         try {
-            List<Map<String, Object>> map = userService.getWorkList(workVo);
+            Map<String, Object> map = userService.getWorkList(workVo);
             return new RestData(map);
         } catch (LibException e) {
             return new RestData(1, e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/workScore", method = RequestMethod.GET)
+    public RestData getWorkScore(User user) {
+        try {
+
+            return userService.getWorkScore(user);
+        } catch (LibException e) {
+            return new RestData(1, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/score", method = RequestMethod.POST)
+    public RestData postScore(@RequestBody Work work) {
+        try {
+            return userService.postWorkScore(work);
+        } catch (LibException e) {
+            return new RestData(1, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/publish", method = RequestMethod.POST)
+    public RestData postPublishScore() {
+        try {
+            return userService.postPublishWorkScore();
+        } catch (LibException e) {
+            return new RestData(1, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/news", method = RequestMethod.POST)
+    public RestData postNews(@RequestBody News news) {
+        try {
+            return userService.postNews(news);
+        } catch (LibException e) {
+            return new RestData(1, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/news", method = RequestMethod.GET)
+    public RestData getNews() {
+        logger.info("getNews");
+        return userService.getNews();
+
+    }
+
+    @RequestMapping(value = "/newsContent/{newsId}", method = RequestMethod.GET)
+    public RestData getDetailsNews(@PathVariable Integer newsId) {
+        try {
+            return userService.getDetailNews(newsId);
+        } catch (LibException e) {
+            return new RestData(1, e.getMessage());
+        }
+
+    }
+
+    @RequestMapping(value = "/student", method = RequestMethod.POST)
+    public RestData postStudentMessage(@RequestBody Student student) {
+        try {
+            return userService.postStudentMessage(student);
+        } catch (LibException e) {
+            return new RestData(1, e.getMessage());
+        }
+
     }
 }

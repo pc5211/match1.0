@@ -1,9 +1,8 @@
 package nefu.itgardener.judge.service;
 
 import nefu.itgardener.judge.common.LibException;
-import nefu.itgardener.judge.core.model.User;
-import nefu.itgardener.judge.core.model.Work;
-import nefu.itgardener.judge.core.model.WorkVo;
+import nefu.itgardener.judge.common.RestData;
+import nefu.itgardener.judge.core.model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,5 +62,63 @@ public interface UserService {
      * @return
      * @throws LibException
      */
-    List<Map<String, Object>> getWorkList(WorkVo workVo) throws LibException;
+    Map<String, Object> getWorkList(WorkVo workVo) throws LibException;
+
+    /**
+     * 查看分数
+     *
+     * @param user id workId
+     * @return rest
+     */
+    RestData getWorkScore(User user) throws LibException;
+
+    /**
+     * 提交分数
+     *
+     * @param work work
+     * @return rest
+     * @throws LibException ex
+     */
+    RestData postWorkScore(Work work) throws LibException;
+
+    /**
+     * 根据密钥公布分数
+     *
+     * @return restData
+     */
+    RestData postPublishWorkScore() throws LibException;
+
+    /**
+     * 发布通知
+     *
+     * @param news 新闻
+     * @return restData
+     */
+    RestData postNews(News news) throws LibException;
+
+    /**
+     * 查看所有通知
+     *
+     * @return restData
+     * @throws LibException lib
+     */
+    RestData getNews();
+
+    /**
+     * 查看所有通知
+     *
+     * @param newsId ID
+     * @return RESTData
+     * @throws LibException
+     */
+    RestData getDetailNews(Integer newsId) throws LibException;
+
+    /**
+     * 提交签到
+     *
+     * @param student 学号
+     * @return RestData
+     * @throws LibException exception
+     */
+    RestData postStudentMessage(Student student) throws LibException;
 }

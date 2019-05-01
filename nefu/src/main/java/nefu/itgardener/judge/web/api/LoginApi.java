@@ -17,7 +17,7 @@ import java.util.Map;
  * @since : Java 8
  */
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
-@RequestMapping("match")
+@RequestMapping("api")
 @RestController
 public class LoginApi {
 

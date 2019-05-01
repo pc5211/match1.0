@@ -20,6 +20,9 @@ public class UserProvider {
                 if (user.getPassword() != null) {
                     WHERE("password = #{password}");
                 }
+                if (user.getWorkId() != null) {
+                    WHERE("work_id = #{workId}");
+                }
             }
         }.toString();
     }
@@ -28,7 +31,8 @@ public class UserProvider {
     public String selectWorkByCondition(Work work) {
         return new SQL() {
             {
-                SELECT("work_id as workId,work_name as workName,score,link,honor,work_url as workUrl");
+                SELECT("work_id as workId,work_name as workName,score,link,honor,work_url as workUrl" +
+                        ",yytg1,yytg2,yytg3,yytg4,yytg5,kszx1,kszx2,kszx3,kszx4,kszx5,khfw1,khfw2,khfw3,khfw4,khfw5");
                 FROM("work");
                 if (work.getWorkId() != null) {
                     WHERE("work_id = #{workId}");
@@ -79,10 +83,10 @@ public class UserProvider {
                     }
                 }
                 if (workVo.getWorkName() != null) {
-                    WHERE("work_name = #{workName}");
+                    WHERE("work_name = " + workVo.getWorkName());
                 }
                 if (workVo.getWorkId() != null) {
-                    WHERE("work_id = #{workId}");
+                    WHERE("work_id = " + workVo.getWorkId());
                 }
                 ORDER_BY(" work_id LIMIT " + finalLimit);
 
@@ -90,5 +94,77 @@ public class UserProvider {
 
         }.toString();
     }
+
+    public String updateWorkByWorkId(Work work) {
+        return new SQL() {
+            {
+                UPDATE("work");
+                if (null != work.getYytg1()) {
+                    SET("yytg1 = #{yytg1} ");
+                }
+                if (null != work.getYytg5()) {
+                    SET("yytg5 = #{yytg5} ");
+                }
+                if (null != work.getYytg2()) {
+                    SET("yytg2 = #{yytg2} ");
+                }
+                if (null != work.getYytg3()) {
+                    SET("yytg3 = #{yytg3} ");
+                }
+                if (null != work.getYytg4()) {
+                    SET("yytg4 = #{yytg4} ");
+                }
+                if (null != work.getKszx1()) {
+                    SET("kszx1 = #{kszx1} ");
+                }
+                if (null != work.getKszx2()) {
+                    SET("kszx2 = #{kszx2} ");
+                }
+                if (null != work.getKszx3()) {
+                    SET("kszx3 = #{kszx3} ");
+                }
+                if (null != work.getKszx4()) {
+                    SET("kszx4 = #{kszx4} ");
+                }
+                if (null != work.getKszx5()) {
+                    SET("kszx5 = #{kszx5} ");
+                }
+                if (null != work.getKhfw1()) {
+                    SET("khfw1 = #{khfw1}");
+                }
+                if (null != work.getKhfw2()) {
+                    SET("khfw2 = #{khfw2}");
+                }
+                if (null != work.getKhfw3()) {
+                    SET("khfw3 = #{khfw3}");
+                }
+                if (null != work.getKhfw4()) {
+                    SET("khfw4 = #{khfw4}");
+                }
+                if (null != work.getKhfw5()) {
+                    SET("khfw5 = #{khfw5}");
+                }
+                if (work.getScore() != null) {
+                    SET("score = #{score}");
+                }
+                if (work.getHonor() != null) {
+                    SET("honor = #{honor}");
+                }
+                WHERE("work_id = #{workId}");
+            }
+        }.toString();
+    }
+
+    public String selectWorkOrderByScore() {
+        return new SQL() {
+            {
+                SELECT("work_id as workId ,score");
+                FROM("work");
+                ORDER_BY("score DESC");
+
+            }
+        }.toString();
+    }
+
 
 }

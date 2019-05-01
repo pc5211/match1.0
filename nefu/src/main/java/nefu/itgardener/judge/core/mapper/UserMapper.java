@@ -1,10 +1,9 @@
 package nefu.itgardener.judge.core.mapper;
 
+
 import nefu.itgardener.judge.common.Page;
 import nefu.itgardener.judge.core.mapper.Provider.UserProvider;
-import nefu.itgardener.judge.core.model.User;
-import nefu.itgardener.judge.core.model.Work;
-import nefu.itgardener.judge.core.model.WorkVo;
+import nefu.itgardener.judge.core.model.*;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -49,7 +48,7 @@ public interface UserMapper {
      * @return workId
      */
     @Insert("INSERT work SET link = #{link},work_name = #{workName},work_url = #{workUrl}")
-    @Options(useGeneratedKeys = true, keyProperty = "wordId", keyColumn = "work_id")
+    @Options(useGeneratedKeys = true, keyProperty = "workId", keyColumn = "work_id")
     int insertWork(Work work);
 
     /**
@@ -88,4 +87,78 @@ public interface UserMapper {
      */
     @SelectProvider(type = UserProvider.class, method = "selectDetailByCondition")
     List<Work> selectDetailByCondition(WorkVo workVo, Page page);
+
+    /**
+     * 更新分数
+     *
+     * @param work work
+     * @return int
+     */
+    @UpdateProvider(type = UserProvider.class, method = "updateWorkByWorkId")
+    int updateWorkByWorkId(Work work);
+
+    /**
+     * 查看密钥
+     *
+     * @return config
+     */
+    @Select("select config_key as configKey config_value as configValue where config_key = 'publish_key' ")
+    Config selectConfig();
+
+    @Select("select work_id as workId ,score from work order by score desc")
+    List<Work> selectWorkOrderByScore();
+
+    /**
+     * 插入通知
+     *
+     * @param news 通知
+     * @return int
+     */
+    @Insert("insert news set news_time=#{newsTime},news_title = #{newsTitle},news_content=#{newsContent}")
+    int insertNews(News news);
+
+    /**
+     * 查看所有的通知
+     *
+     * @return list
+     */
+    @Select("select news_id as newsId,news_time as newsTime,news_title as newsTitle,news_content as newsContent from" +
+            " news order by news_id")
+    List<News> selectAllNews();
+
+    /**
+     * 根据id查看通知
+     *
+     * @param news
+     * @return
+     */
+    @Select("select news_id as newsId,news_time as newsTime,news_title as newsTitle,news_content as newsContent from" +
+            " news where news_id = #{newsId} ")
+    List<News> selectNewsById(News news);
+
+    /**
+     * 根据学号查询学生
+     *
+     * @param student 学生
+     * @return list
+     */
+    @Select("select student_id as studentId , number , type from student where number = #{number}")
+    List<Student> selectStudentByNumber(Student student);
+
+    /**
+     * 插入学号
+     *
+     * @param student 学号 和类型
+     * @return int
+     */
+    @Insert("insert student set number = #{number},type = #{type}")
+    int insertStudent(Student student);
+
+    /**
+     * 查询数量
+     *
+     * @return
+     */
+    @Select("select number from student where type = 1")
+    List<Student> selectStudentNum();
 }
